@@ -1,6 +1,4 @@
-========================================================
 RC Vehicle Location Estimation based on Tags and Cameras
-========================================================
 
 Diploma Project
 
