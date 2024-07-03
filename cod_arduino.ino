@@ -7,8 +7,8 @@
 #define FLT_MAX 3.4028235E+38
 
 // WiFi credentials
-const char* ssid = "DIGI-9fQt";
-const char* password = "N5yy4W6A";
+const char* ssid = "xxxx";
+const char* password = "xxxx";
 const char* serverUrl = "http://192.168.100.47:5000/get_aruco_status";
 
 // Motor control pins
