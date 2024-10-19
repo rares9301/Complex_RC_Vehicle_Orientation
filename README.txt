@@ -18,9 +18,3 @@ RC Vehicle (cod_arduino.ino): The ESP32 implementation for the RC vehicle.
 Mobile App: Includes pubspec.yaml for dependencies and main.dart for the application that captures images.
 
 The mobile app includes additional standard Flutter files. Please let me know if you need all of them.
-
-Steps:
-Install Flutter SDK
-Install Android SDK
-Run in cmd: flutter doctor
-Run in cmd: flutter create my_project
