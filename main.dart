@@ -1,4 +1,7 @@
 ﻿// Importing necessary Dart and Flutter packages for camera access, HTTP requests, and permissions handling.
+import 'dart:io'; 
+import 'dart:typed_data'; 
+import 'package:image/image.dart' as img; 
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -99,24 +102,32 @@ class _CameraScreenState extends State<CameraScreen> {
 
   // Captures an image and, if uploading is enabled, sends it to the server.
   Future<void> _takePicture() async {
-    if (!controller!.value.isInitialized || !isUploading) {
-      return;
-    }
-    try {
-      final image = await controller!.takePicture();
-      if (isUploading) {
-        _sendImageToServer(image.path); // Sends the captured image to the server.
-      }
-    } catch (e) {
-      print("Failed to take picture: $e");
-    }
+  if (!controller!.value.isInitialized || !isUploading) {
+    return;
   }
+  try {
+    final image = await controller!.takePicture();
+    if (isUploading) {
+      // Convert jpg to png
+      final jpgBytes = await image.readAsBytes();
+      img.Image? jpgImage = img.decodeJpg(jpgBytes);
+      final pngBytes = img.encodePng(jpgImage!);
+      final pngPath = image.path.replaceAll('.jpg', '.png').replaceAll('.jpeg', '.png');
+      final pngFile = File(pngPath);
+      await pngFile.writeAsBytes(pngBytes);
+
+      _sendImageToServer(pngPath); // Sends the captured image to the server.
+    }
+  } catch (e) {
+    print("Failed to take picture: $e");
+  }
+}
 
   // Asynchronously sends the captured image to the server.
   Future<void> _sendImageToServer(String imagePath) async {
     if (!isUploading) return; // If uploading is stopped, the function returns early.
   
-    var uri = Uri.parse('http://192.168.100.47:5000/upload'); // Server URL.
+    var uri = Uri.parse('http://192.168.1.125:5000/upload'); // Server URL. - port forward rule to wsl range 127.x.x.x
     var request = http.MultipartRequest('POST', uri)
         ..files.add(await http.MultipartFile.fromPath('image', imagePath)); // Creating a multipart request with the image.
 
@@ -153,4 +164,3 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 }
-
